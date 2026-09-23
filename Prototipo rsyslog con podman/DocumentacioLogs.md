@@ -134,6 +134,8 @@ mkdir -p ~/rsyslog-container
 cd ~/rsyslog-container
 ```
 
+> El archivo de definición completo está disponible en [`Containerfile`](./Containerfile), en la raíz de este repositorio.
+
 ```Dockerfile
 FROM rockylinux:9
 RUN dnf install -y rsyslog && dnf clean all
