@@ -1,0 +1,15 @@
+- name: Prueba de crear archivo
+  hosts: rocky_clients
+  become: true
+
+  tasks:
+    - name: verificar que tree este instalado
+      ansible.builtin.dnf:
+        name: tree
+        state: present
+
+    - name: Crear un archivo con contenido 
+      ansible.builtin.copy:
+        content: "El archivo se creo correctamente \n"
+        dest: /tmp/prueba-archivo.txt
+        mode: '0644'
