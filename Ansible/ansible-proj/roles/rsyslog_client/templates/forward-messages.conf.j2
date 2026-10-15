@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+# Reenvía únicamente {{ rsyslog_client_file }} al servidor central
+module(load="imfile" PollingInterval="10")
+
+ruleset(name="forwardMessages") {
+    action(type="omfwd" target="{{ rsyslog_server_ip }}" port="{{ rsyslog_port }}" protocol="{{ rsyslog_client_protocol }}")
+}
+
+input(type="imfile"
+      File="{{ rsyslog_client_file }}"
+      Tag="{{ rsyslog_client_tag }}"
+      Severity="info"
+      Facility="local0"
+      ruleset="forwardMessages")

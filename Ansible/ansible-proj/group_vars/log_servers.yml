@@ -1,0 +1,2 @@
+# Usuario que corre Podman rootless (el mismo que ejecuta ansible-playbook)
+podman_user: "{{ lookup('env', 'USER') }}"

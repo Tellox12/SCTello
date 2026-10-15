@@ -1,0 +1,18 @@
+# {{ ansible_managed }}
+# Configuración del servidor central de logs
+
+{% if 'tcp' in rsyslog_protocols %}
+module(load="imtcp")
+input(type="imtcp" port="{{ rsyslog_port }}")
+{% endif %}
+{% if 'udp' in rsyslog_protocols %}
+module(load="imudp")
+input(type="imudp" port="{{ rsyslog_port }}")
+{% endif %}
+
+# Un directorio por equipo de origen y un archivo por programa
+template(name="RemoteLogs" type="string"
+         string="/var/log/remote/%HOSTNAME%/%PROGRAMNAME%.log")
+
+*.* ?RemoteLogs
+& stop

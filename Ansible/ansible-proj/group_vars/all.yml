@@ -1,0 +1,6 @@
+# IP del servidor de logs, vista desde los clientes.
+rsyslog_server_ip: "TU IP"
+rsyslog_port: 514
+# Protocolos habilitados: ["tcp"] o ["tcp", "udp"]
+rsyslog_protocols:
+  - tcp

@@ -1,0 +1,86 @@
+- name: Permitir que Podman rootless use el puerto {{ rsyslog_port }}
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_unprivileged_port_start
+    value: "{{ rsyslog_port }}"
+    sysctl_file: /etc/sysctl.d/99-rootless-syslog.conf
+    state: present
+    reload: true
+  become: true
+  tags: [server, sistema]
+
+- name: Crear directorios del servidor (propiedad del usuario de Podman)
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ podman_user }}"
+    group: "{{ podman_user }}"
+    mode: "0755"
+  become: true
+  loop:
+    - "{{ data_dir }}"
+    - "{{ conf_dir }}"
+  tags: [server, sistema]
+
+- name: Crear directorio de construcción de la imagen
+  ansible.builtin.file:
+    path: "{{ build_dir }}"
+    state: directory
+    mode: "0755"
+  tags: [server, imagen]
+
+- name: Desplegar la configuración de rsyslog del servidor
+  ansible.builtin.template:
+    src: rsyslog.conf.j2
+    dest: "{{ conf_dir }}/rsyslog.conf"
+    owner: "{{ podman_user }}"
+    group: "{{ podman_user }}"
+    mode: "0644"
+  become: true
+  notify: Recrear contenedor rsyslog
+  tags: [server, configuracion]
+
+- name: Copiar el Containerfile
+  ansible.builtin.copy:
+    src: Containerfile
+    dest: "{{ build_dir }}/Containerfile"
+    mode: "0644"
+  register: containerfile
+  tags: [server, imagen]
+
+- name: Construir la imagen del contenedor
+  containers.podman.podman_image:
+    name: "{{ image_name }}"
+    tag: "{{ image_tag }}"
+    path: "{{ build_dir }}"
+    force: "{{ containerfile is changed }}"
+  register: imagen
+  tags: [server, imagen]
+
+- name: Iniciar el contenedor rsyslog-server
+  containers.podman.podman_container:
+    name: "{{ container_name }}"
+    image: "localhost/{{ image_name }}:{{ image_tag }}"
+    state: started
+    recreate: "{{ imagen is changed }}"
+    restart_policy: unless-stopped
+    publish: "{{ rsyslog_publish }}"
+    volume:
+      - "{{ data_dir }}:/var/log/remote:Z"
+      - "{{ conf_dir }}/rsyslog.conf:/etc/rsyslog.conf:Z,ro"
+  tags: [server, contenedor]
+
+- name: Abrir el puerto en firewalld
+  ansible.posix.firewalld:
+    port: "{{ rsyslog_port }}/{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  become: true
+  loop: "{{ rsyslog_protocols }}"
+  tags: [server, firewall]
+
+- name: Esperar a que el puerto esté escuchando
+  ansible.builtin.wait_for:
+    port: "{{ rsyslog_port }}"
+    timeout: 30
+  tags: [server, verificacion]

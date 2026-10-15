@@ -1,0 +1,10 @@
+container_name: rsyslog-server
+image_name: rsyslog-server
+image_tag: latest
+
+data_dir: /srv/syslog_data
+conf_dir: /etc/rsyslog-server
+build_dir: "{{ lookup('env', 'HOME') }}/rsyslog-container"
+
+# Puertos publicados por Podman, derivados de rsyslog_protocols (ej. "514:514/tcp")
+rsyslog_publish: "{{ rsyslog_protocols | map('regex_replace', '^', rsyslog_port ~ ':' ~ rsyslog_port ~ '/') | list }}"

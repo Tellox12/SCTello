@@ -1,0 +1,1 @@
+rsyslog_client_protocol: "{{ rsyslog_protocols[0] }}"

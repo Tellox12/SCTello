@@ -1,0 +1,27 @@
+- name: Asegurar que rsyslog esté instalado
+  ansible.builtin.dnf:
+    name: rsyslog
+    state: present
+  tags: [client, paquetes]
+
+- name: Habilitar e iniciar rsyslog
+  ansible.builtin.systemd:
+    name: rsyslog
+    state: started
+    enabled: true
+  tags: [client, servicio]
+
+- name: Desplegar la regla de reenvío
+  ansible.builtin.template:
+    src: forward-messages.conf.j2
+    dest: /etc/rsyslog.d/forward-messages.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reiniciar rsyslog
+  tags: [client, configuracion]
+
+- name: Validar la sintaxis de rsyslog antes de reiniciar
+  ansible.builtin.command: rsyslogd -N1
+  changed_when: false
+  tags: [client, verificacion]

@@ -1,0 +1,11 @@
+- name: Recrear contenedor rsyslog
+  containers.podman.podman_container:
+    name: "{{ container_name }}"
+    image: "localhost/{{ image_name }}:{{ image_tag }}"
+    state: started
+    recreate: true
+    restart_policy: unless-stopped
+    publish: "{{ rsyslog_publish }}"
+    volume:
+      - "{{ data_dir }}:/var/log/remote:Z"
+      - "{{ conf_dir }}/rsyslog.conf:/etc/rsyslog.conf:Z,ro"

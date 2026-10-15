@@ -40,10 +40,148 @@
     - name: Habilitar e iniciar httpd
       ansible.builtin.systemd:
         name: httpd
+
+  tasks:
+    - name: Crear el grupo del administrador web
+      ansible.builtin.group:
+        name: "{{ admin_grupo }}"
+        state: present
+
+    - name: Crear el usuario administrador web
+      ansible.builtin.user:
+        name: "{{ admin_usuario }}"
+        group: "{{ admin_grupo }}"
+        shell: /bin/bash
+        create_home: true
+        comment: "Usuario administrador del sitio web (creado por Ansible)"
+
+    - name: Instalar paquetes necesarios
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - vim
+        state: present
+
+    - name: Desplegar la página principal desde plantilla
         state: started
         enabled: true
 
+
+  tasks:
+    - name: Crear el grupo del administrador web
+      ansible.builtin.group:
+        name: "{{ admin_grupo }}"
+        state: present
+
+    - name: Crear el usuario administrador web
+      ansible.builtin.user:
+        name: "{{ admin_usuario }}"
+        group: "{{ admin_grupo }}"
+        shell: /bin/bash
+        create_home: true
+        comment: "Usuario administrador del sitio web (creado por Ansible)"
+
+    - name: Instalar paquetes necesarios
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - vim
+        state: present
+
+    - name: Desplegar la página principal desde plantilla
     - name: Abrir el puerto 80 en firewalld
+
+  tasks:
+    - name: Crear el grupo del administrador web
+      ansible.builtin.group:
+        name: "{{ admin_grupo }}"
+        state: present
+
+    - name: Crear el usuario administrador web
+      ansible.builtin.user:
+        name: "{{ admin_usuario }}"
+        group: "{{ admin_grupo }}"
+        shell: /bin/bash
+        create_home: true
+        comment: "Usuario administrador del sitio web (creado por Ansible)"
+
+    - name: Instalar paquetes necesarios
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - vim
+        state: present
+
+    - name: Desplegar la página principal desde plan
+
+  tasks:
+    - name: Crear el grupo del administrador web
+      ansible.builtin.group:
+        name: "{{ admin_grupo }}"
+        state: present
+
+    - name: Crear el usuario administrador web
+      ansible.builtin.user:
+        name: "{{ admin_usuario }}"
+        group: "{{ admin_grupo }}"
+        shell: /bin/bash
+        create_home: true
+        comment: "Usuario administrador del sitio web (creado por Ansible)"
+
+    - name: Instalar paquetes necesarios
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - vim
+        state: present
+
+    - name: Desplegar la página principal desde plan
+
+  tasks:
+    - name: Crear el grupo del administrador web
+      ansible.builtin.group:
+        name: "{{ admin_grupo }}"
+        state: present
+
+    - name: Crear el usuario administrador web
+      ansible.builtin.user:
+        name: "{{ admin_usuario }}"
+        group: "{{ admin_grupo }}"
+        shell: /bin/bash
+        create_home: true
+        comment: "Usuario administrador del sitio web (creado por Ansible)"
+
+    - name: Instalar paquetes necesarios
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - vim
+        state: present
+
+    - name: Desplegar la página principal desde plan
+
+  tasks:
+    - name: Crear el grupo del administrador web
+      ansible.builtin.group:
+        name: "{{ admin_grupo }}"
+        state: present
+
+    - name: Crear el usuario administrador web
+      ansible.builtin.user:
+        name: "{{ admin_usuario }}"
+        group: "{{ admin_grupo }}"
+        shell: /bin/bash
+        create_home: true
+        comment: "Usuario administrador del sitio web (creado por Ansible)"
+
+    - name: Instalar paquetes necesarios
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - vim
+        state: present
+
+    - name: Desplegar la página principal desde plantillatillatillatilla
       ansible.posix.firewalld:
         service: http
         permanent: true

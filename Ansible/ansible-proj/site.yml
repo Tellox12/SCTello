@@ -1,0 +1,10 @@
+- name: Servidor central de logs (contenedor Podman rootless)
+  hosts: log_servers
+  roles:
+    - rsyslog_server
+
+- name: Clientes que reenvían /var/log/messages al servidor
+  hosts: log_clients
+  become: true
+  roles:
+    - rsyslog_client

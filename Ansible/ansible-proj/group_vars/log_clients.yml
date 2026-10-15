@@ -1,0 +1,2 @@
+rsyslog_client_tag: "rocky-messages"
+rsyslog_client_file: "/var/log/messages"
